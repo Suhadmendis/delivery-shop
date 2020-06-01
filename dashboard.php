@@ -8,7 +8,7 @@
 
             include ("DB_connector.php");
 
-            $sql = "SELECT * FROM sys_entry order by sub";
+            $sql = "SELECT * FROM sys_entry_delivery order by sub";
             $result = $conn->query($sql);
             $row = $result->fetchAll();
             

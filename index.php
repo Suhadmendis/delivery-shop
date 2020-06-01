@@ -20,35 +20,10 @@ if (isset($_COOKIE[$cookie_name])) {
 include 'head_res.php'; 
 if (isset($_GET['url'])) {
 
-  // if ($_GET['url'] == "registration"){
-  //   include 'm_registration.php';
-  // }
-
-  if ($_GET['url'] == "pay"){
-    include 'm_payment.php';
-  }
   if ($_GET['url'] == "store"){
     include 'm_store.php';
   }
 
-  if ($_GET['url'] == "item"){
-    include 'm_item.php';
-  }
-  if ($_GET['url'] == "category"){
-    include 'm_category.php';
-  }
-
-  if ($_GET['url'] == "registration"){
-    include 'm_registration.php';
-  }
-  if ($_GET['url'] == "system_info"){
-    include 'sys_info.php';
-  }
-  if ($_GET['url'] == "shop_item"){
-    include 'm_shop_item.php';
-  }
-
-  
 
 
 
