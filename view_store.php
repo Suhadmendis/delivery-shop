@@ -23,17 +23,11 @@
 </head>
 
 <body>
+    <p>Test</p>
     <div id="map"></div>
-    <script>
-        var map;
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: -34.397, lng: 150.644 },
-                zoom: 8
-            });
-        }
-    </script>
+    <script src="js/m_store.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClBKRU9iKfSLnXVTvdv11RvKwpCrfdoQI&callback=initMap" async defer></script>
+    <script>setTimeout(function(){ getStores(); }, 2000);</script>
 </body>
 
 </html>
