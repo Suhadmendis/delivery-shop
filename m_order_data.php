@@ -14,19 +14,22 @@ if ($_GET["Command"] == "generate") {
     $ResponseXML = "";
     $ResponseXML .= "<new>";
 
-    $sql = "SELECT store_ref FROM sys_info";
+    $sql = "SELECT * FROM m_order";
     $result = $conn->query($sql);
-    $row = $result->fetch();
-    $no = $row['store_ref'];
-    $tmpinvno = "000000" . $row["store_ref"];
-    $lenth = strlen($tmpinvno);
-    $no = trim("ST/") . substr($tmpinvno, $lenth - 7);
+    $row = $result->fetchAll();
+    // $no = $row['store_ref'];
+    // $tmpinvno = "000000" . $row["store_ref"];
+    // $lenth = strlen($tmpinvno);
+    // $no = trim("ST/") . substr($tmpinvno, $lenth - 7);
 
 
-    $en_name = "Store";
+
+
+
+    $en_name = "Order";
 
     $objArray = Array();
-    array_push($objArray,$no,$en_name);
+    array_push($objArray,$row,$en_name);
 
     echo json_encode($objArray);
 
@@ -46,30 +49,6 @@ if ($_GET["Command"] == "getStores") {
     $row = $result->fetchAll();
     
     $objArray = Array();
-    array_push($objArray,$row);
-
-    echo json_encode($objArray);
-}
-
-
-if ($_GET["Command"] == "getRoutes") {
-   header('Content-Type: application/json');
-
-    $ResponseXML = "";
-    $ResponseXML .= "<new>";
-
-    $objArray = Array();
-    
-    $sql = "SELECT * FROM m_order where REF = '" . $_GET['REF'] . "'";
-    $result = $conn->query($sql);
-    $row = $result->fetch();
-
-    array_push($objArray,$row);
-
-    $sql = "SELECT loctaion_point_lat as lat, loctaion_point_lng as lng, shop_name FROM m_store where REF = '" . $row['st_ref'] . "'";
-    $result = $conn->query($sql);
-    $row = $result->fetch();
-
     array_push($objArray,$row);
 
     echo json_encode($objArray);

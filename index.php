@@ -24,6 +24,10 @@ if (isset($_GET['url'])) {
     include 'm_store.php';
   }
 
+  if ($_GET['url'] == "order"){
+    include 'm_order.php';
+  }
+
 
 
 

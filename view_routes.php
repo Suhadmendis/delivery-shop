@@ -23,11 +23,14 @@
 </head>
 
 <body>
+    <h1 id="duration"></h1>
     
+    <input type="hidden" id="order_ref" value="<?php echo $_GET['Ref'] ?>">
     <div id="map"></div>
     <script src="js/m_store.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClBKRU9iKfSLnXVTvdv11RvKwpCrfdoQI&callback=initMap" async defer></script>
-    <script>setTimeout(function(){ getStores(); }, 2000);</script>
+    <script>setTimeout(function(){ getRoutes(); }, 2000);</script>
+    <script>setTimeout(function(){ getInfo(); }, 4000);</script>
 </body>
 
 </html>

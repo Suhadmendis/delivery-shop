@@ -1,17 +1,28 @@
 var vue = new Vue({
-  el: '#app',
+  el: "#app",
   data: {
-    en_name: '',
-    REF: ''    
+    en_name: "",
+    ORDERS: "",
   },
-    mounted () {
-        axios
-          .get('m_store_data.php?Command=generate')
-          .then(response => {
-            this.en_name = response.data[1]
-            this.REF = response.data[0]
-        })
-    }
+  mounted() {
+    axios.get("m_order_data.php?Command=generate").then((response) => {
+      this.en_name = response.data[1];
+      this.ORDERS = response.data[0];
+      console.log(response.data[0]);
+    });
+  },
+  methods: {
+    view_stores: function (ref) {
+      view_stores(ref);
+      // axios
+      //     .get('server/cart_data.php?Command=generate')
+      //     .then(response => {
+      //         this.CART = JSON.parse(response.data[0]);
+      //         this.prepareCartt();
+      //         vue.reloadCart();
+      //     })
+    },
+  },
 });
 
 function GetXmlHttpObject() {
@@ -48,9 +59,9 @@ function lost_focus(key) {
 
 
 
-function view_stores() {
-  var url = "view_store.php";
-  url = url + "?Command=" + "view";
+function view_stores(ref) {
+  var url = "view_routes.php";
+  url = url + "?Ref=" + ref;
   
   window.open(url, "_blank");
 }
@@ -63,26 +74,16 @@ function view_stores() {
 
 
 
-var directionsRenderer;
-var directionsService;
+
 
 var map;
 function initMap() {
-  var rendererOptions = {
-   
-    suppressMarkers: false
-  };
-    directionsRenderer = new google.maps.DirectionsRenderer({
-      suppressMarkers: true,
-    });
-    directionsService = new google.maps.DirectionsService();
+    
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 6.892785, lng: 79.980789 },
     zoom: 12,
   });
-  directionsRenderer.setMap(map);
-
-  
+  ;
 }
 
 
@@ -94,7 +95,7 @@ function getStores(){
         return;
     }
 
-    var url = "m_store_data.php";
+    var url = "m_order_data.php";
     url = url + "?Command=" + "getStores";
     url = url + "&ls=" + "new";
 
@@ -131,89 +132,25 @@ function got_stores() {
                   color: "black",
                   fontSize: "18px",
                 },
+                // icon: './img/shop_icon.png',
                 map: map,
               })
             );
         }
+// #48b94c
+
+// var uluru2 = { lat: 6.882785, lng: 79.980789 };
+// marker1.push(new google.maps.Marker({ position: uluru2, map: map }));
+    //   XMLAddress1 = xmlHttp.responseXML.getElementsByTagName("id");
+    //   vue.REF = XMLAddress1[0].childNodes[0].nodeValue;
+
+    //   XMLAddress1 = xmlHttp.responseXML.getElementsByTagName("en_name");
+    //   vue.en_name = XMLAddress1[0].childNodes[0].nodeValue;
 
     }
 }
 
 
-function getRoutes() {
-  xmlHttp = GetXmlHttpObject();
-  if (xmlHttp == null) {
-    alert("Browser does not support HTTP Request");
-    return;
-  }
-
-  var url = "m_store_data.php";
-  url = url + "?Command=" + "getRoutes";
-  url = url + "&REF=" + document.getElementById("order_ref").value;
-  url = url + "&ls=" + "new";
-
-  xmlHttp.onreadystatechange = got_routes;
-  xmlHttp.open("GET", url, true);
-  xmlHttp.send(null);
-}
-
-function got_routes() {
-  var XMLAddress1;
-
-  if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
-    var obj = JSON.parse(xmlHttp.response);
-    var delivery = obj[0];
-    var shop = obj[1];
-    console.log(delivery);
-    console.log(shop);
-    var marker = [];
-    var location;
-    var location_lat;
-    var location_lng;
-
-   
-      // console.log(delivery[i].lat);
-      location1 = {
-        lat: parseFloat(delivery.lat),
-        lng: parseFloat(delivery.lng),
-      };
-      marker.push(
-        new google.maps.Marker({
-          position: location1,
-
-          label: {
-            text: delivery.reg_name,
-            color: "black",
-            fontSize: "18px",
-          },
-          icon: "./img/customer.png",
-          map: map,
-        })
-      );
-
-      location2 = {
-        lat: parseFloat(shop.lat),
-        lng: parseFloat(shop.lng),
-      };
-      marker.push(
-        new google.maps.Marker({
-          position: location2,
-
-          label: {
-            text: shop.shop_name,
-            color: "black",
-            fontSize: "18px",
-          },
-          icon: "./img/store_icon.png",
-          map: map,
-        })
-      );
-    
-
-      calculateAndDisplayRoute(directionsService, directionsRenderer, location1 ,location2);
-
-  }
-}
 
 
 
@@ -223,71 +160,10 @@ function got_routes() {
 
 
 
-function calculateAndDisplayRoute(directionsService, directionsRenderer, loc1, loc2) {
-  directionsService.route(
-    {
-      origin: loc1, // Haight.
-      destination: loc2, // Ocean Beach.
-      // Note that Javascript allows us to access the constant
-      // using square brackets and a string value as its
-      // "property."
-      travelMode: google.maps.TravelMode["DRIVING"],
-    },
-    function (response, status) {
-      if (status == "OK") {
-        console.log(response);
-        directionsRenderer.setDirections(response);
-      } else {
-        window.alert("Directions request failed due to " + status);
-      }
-    }
-  );
-
-    
-    setTimeout(function () {
-      getInfo(loc1, loc2);
-    }, 2000);
-}
 
 
 
 
-
-
-function getInfo(loc1, loc2) {
-  var service = new google.maps.DistanceMatrixService();
-  service.getDistanceMatrix(
-    {
-      origins: [loc1],
-      destinations: [loc2],
-      travelMode: "DRIVING",
-      unitSystem: google.maps.UnitSystem.METRIC,
-      avoidHighways: false,
-      avoidTolls: false,
-    },
-    function (response, status) {
-      if (status !== "OK") {
-        alert("Error was: " + status);
-      } else {
-        var originList = response.originAddresses;
-        var destinationList = response.destinationAddresses;
-
-        for (var i = 0; i < originList.length; i++) {
-          var results = response.rows[i].elements;
-          console.log(results[0].distance.text);
-          console.log(results[0].duration.text);
-          document.getElementById("duration").innerHTML =
-            "Distance : " +
-            results[0].distance.text +
-            ", " +
-            "Duration : " +
-            results[0].duration.text; 
-
-        }
-      }
-    }
-  );
-}
 
 
 
@@ -322,7 +198,7 @@ function getInfo(loc1, loc2) {
 //         return;
 //     }
 
-//     var url = "m_store_data.php";
+//     var url = "m_order_data.php";
 //     url = url + "?Command=" + "getdt";
 //     url = url + "&ls=" + "new";
 
@@ -364,7 +240,7 @@ function getInfo(loc1, loc2) {
 //         return false;
 //     }
 
-//     var url = "m_store_data.php";
+//     var url = "m_order_data.php";
 //     url = url + "?Command=" + "save_item";
 //     url = url + "&REF=" + document.getElementById("REF").value;
 //     url = url + "&shop_name=" + document.getElementById("shop_name").value;
@@ -427,7 +303,7 @@ function getInfo(loc1, loc2) {
 //         return false;
 //     }
 
-//     var url = "m_store_data.php";
+//     var url = "m_order_data.php";
 //     url = url + "?Command=" + "approve";
 //     url = url + "&REF=" + document.getElementById("REF").value;
 
@@ -462,7 +338,7 @@ function getInfo(loc1, loc2) {
 //         alert("Browser does not support HTTP Request");
 //         return;
 //     }
-//     var url = "m_store_data.php";
+//     var url = "m_order_data.php";
 //     url = url + "?Command=" + "getForm";
 //     url = url + "&REF=" + REF;
 //     url = url + "&IDF=" + IDF;
