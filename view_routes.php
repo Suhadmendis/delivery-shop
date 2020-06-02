@@ -23,7 +23,7 @@
 </head>
 
 <body>
-    <h1 id="duration"></h1>
+    <h3 id="duration">Loading...</h3>
     
     <input type="hidden" id="order_ref" value="<?php echo $_GET['Ref'] ?>">
     <div id="map"></div>
