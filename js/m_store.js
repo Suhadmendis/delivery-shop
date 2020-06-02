@@ -66,6 +66,7 @@ function view_stores() {
 var directionsRenderer;
 var directionsService;
 
+
 var map;
 function initMap() {
   var rendererOptions = {
@@ -85,59 +86,63 @@ function initMap() {
   
 }
 
+var marker = [];
+function getStores() {
+  xmlHttp = GetXmlHttpObject();
+  if (xmlHttp == null) {
+    alert("Browser does not support HTTP Request");
+    return;
+  }
 
-function getStores(){
-    
-    xmlHttp = GetXmlHttpObject();
-    if (xmlHttp == null) {
-        alert("Browser does not support HTTP Request");
-        return;
-    }
+  var url = "m_store_data.php";
+  url = url + "?Command=" + "getStores";
+  url = url + "&ls=" + "new";
 
-    var url = "m_store_data.php";
-    url = url + "?Command=" + "getStores";
-    url = url + "&ls=" + "new";
-
-    xmlHttp.onreadystatechange = got_stores;
-    xmlHttp.open("GET", url, true);
-    xmlHttp.send(null);
-
+  xmlHttp.onreadystatechange = got_stores;
+  xmlHttp.open("GET", url, true);
+  xmlHttp.send(null);
 }
 
 function got_stores() {
-    var XMLAddress1;
+  var XMLAddress1;
 
-    if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete")
-    {
+  if (xmlHttp.readyState == 4 || xmlHttp.readyState == "complete") {
+    var locations = JSON.parse(xmlHttp.response);
+    
+    var location;
+    var location_lat;
+    var location_lng;
 
-        var locations = JSON.parse(xmlHttp.response);
-        var marker = [];
-        var location;
-        var location_lat;
-        var location_lng;
-        
-        for (var i = 0; i < locations[0].length; i++) {
-            console.log(locations[0][i].lat);
-            location = {
-              lat: parseFloat(locations[0][i].lat),
-              lng: parseFloat(locations[0][i].lng)
-            };
-            marker.push(
-              new google.maps.Marker({
-                position: location,
+    for (var i = 0; i < locations[0].length; i++) {
+      console.log(locations[0][i].lat);
+      location = {
+        lat: parseFloat(locations[0][i].lat),
+        lng: parseFloat(locations[0][i].lng),
+      };
+      marker.push(
+        new google.maps.Marker({
+          position: location,
 
-                label: {
-                  text: locations[0][i].shop_name,
-                  color: "black",
-                  fontSize: "18px",
-                },
-                map: map,
-              })
-            );
-        }
-
+          label: {
+            text: locations[0][i].shop_name,
+            color: "black",
+            fontSize: "18px",
+          },
+          map: map,
+        })
+      );
     }
+  }
 }
+
+
+
+
+
+
+
+
+
 
 
 function getRoutes() {
@@ -164,8 +169,9 @@ function got_routes() {
     var obj = JSON.parse(xmlHttp.response);
     var delivery = obj[0];
     var shop = obj[1];
-    console.log(delivery);
-    console.log(shop);
+    var riders = obj[2];
+    console.log(riders);
+    // console.log(shop);
     var marker = [];
     var location;
     var location_lat;
@@ -208,6 +214,44 @@ function got_routes() {
           map: map,
         })
       );
+
+      
+      marker.push(
+        new google.maps.Marker({
+          position: location2,
+
+          label: {
+            text: shop.shop_name,
+            color: "black",
+            fontSize: "18px",
+          },
+          icon: "./img/store_icon.png",
+          map: map,
+        })
+      );
+
+      for (var i = 0; i < riders.length; i++) {
+        if (riders[i].lat != null) {
+          location3 = {
+            lat: parseFloat(riders[i].lat),
+            lng: parseFloat(riders[i].lng),
+          };
+         calRoute(location2, location3, riders[i].name, shop.shop_name);
+          marker.push(
+            new google.maps.Marker({
+              position: location3,
+
+              label: {
+                text: riders[i].name,
+                color: "black",
+                fontSize: "18px",
+              },
+              icon: "./img/delivery_icon.png",
+              map: map,
+            })
+          );
+        }
+      }
     
 
       calculateAndDisplayRoute(directionsService, directionsRenderer, location1 ,location2);
@@ -277,7 +321,7 @@ function getInfo(loc1, loc2) {
           console.log(results[0].distance.text);
           console.log(results[0].duration.text);
           document.getElementById("duration").innerHTML =
-            "Distance : " +
+            "Trip - Distance : " +
             results[0].distance.text +
             ", " +
             "Duration : " +
@@ -287,6 +331,46 @@ function getInfo(loc1, loc2) {
       }
     }
   );
+}
+
+
+function calRoute(loc1, loc2 , name, shop) {
+  
+  var service = new google.maps.DistanceMatrixService();
+  service.getDistanceMatrix(
+    {
+      origins: [loc1],
+      destinations: [loc2],
+      travelMode: "DRIVING",
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: false,
+    },
+    function (response, status) {
+      if (status !== "OK") {
+        alert("Error was: " + status);
+      } else {
+        var originList = response.originAddresses;
+        var destinationList = response.destinationAddresses;
+
+        for (var i = 0; i < originList.length; i++) {
+          var results = response.rows[i].elements;
+          // console.log(results[0].distance.text);
+          // console.log(results[0].duration.text);
+           
+           document.getElementById("routes").innerHTML +=
+             "<br>"+ name +" - "+
+             results[0].distance.text +
+             ", " +
+             "Duration : " +
+             results[0].duration.text + " to "+ shop;
+        }
+      }
+    }
+  );
+
+
+
 }
 
 

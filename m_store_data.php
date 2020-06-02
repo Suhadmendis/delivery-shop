@@ -52,6 +52,8 @@ if ($_GET["Command"] == "getStores") {
 }
 
 
+
+
 if ($_GET["Command"] == "getRoutes") {
    header('Content-Type: application/json');
 
@@ -69,6 +71,13 @@ if ($_GET["Command"] == "getRoutes") {
     $sql = "SELECT loctaion_point_lat as lat, loctaion_point_lng as lng, shop_name FROM m_store where REF = '" . $row['st_ref'] . "'";
     $result = $conn->query($sql);
     $row = $result->fetch();
+
+    array_push($objArray,$row);
+
+
+    $sql = "SELECT lat, lng, user_name as name FROM user_mast_rider";
+    $result = $conn->query($sql);
+    $row = $result->fetchAll();
 
     array_push($objArray,$row);
 
