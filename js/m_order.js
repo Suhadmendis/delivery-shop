@@ -2,12 +2,15 @@ var vue = new Vue({
   el: "#app",
   data: {
     en_name: "",
+    selected: "",
     ORDERS: "",
+    riders: "",
   },
   mounted() {
     axios.get("m_order_data.php?Command=generate").then((response) => {
-      this.en_name = response.data[1];
       this.ORDERS = response.data[0];
+      this.en_name = response.data[1];
+      this.riders = response.data[2];
       console.log(response.data[0]);
     });
   },
@@ -21,6 +24,26 @@ var vue = new Vue({
       //         this.prepareCartt();
       //         vue.reloadCart();
       //     })
+    },
+    reRender: function () {
+      axios.get("m_order_data.php?Command=generate").then((response) => {
+        this.ORDERS = response.data[0];
+        
+      });
+    },
+    setRider: function (value, ref) {
+      if (confirm(event.target.value)) {
+        axios
+          .get(
+            "m_order_data.php?Command=setRider&rider=" +
+              event.target.value +
+              "&ref=" +
+              ref
+          )
+          .then((response) => {
+            this.reRender();
+          });
+      }
     },
   },
 });

@@ -41,13 +41,34 @@ if ($_GET["Command"] == "getStores") {
     $ResponseXML = "";
     $ResponseXML .= "<new>";
 
+    $objArray = Array();
+
     $sql = "SELECT loctaion_point_lat as lat, loctaion_point_lng as lng, shop_name FROM m_store";
     $result = $conn->query($sql);
     $row = $result->fetchAll();
     
-    $objArray = Array();
     array_push($objArray,$row);
 
+    $sql = "SELECT lat, lng, user_name FROM user_mast_rider";
+    $result = $conn->query($sql);
+    $row = $result->fetchAll();
+    
+   
+
+    for($i = 0; $i<sizeof($row);$i++){
+        $sqlrider = "SELECT * FROM m_order where rider_name = '" . $row[$i]['user_name'] . "' and status = 'DELIVERY'";
+        $result = $conn->query($sqlrider);
+        $rowrider = $result->fetch();
+
+        if($rowrider['REF'] != ""){
+            $row[$i]['ON_DELIVERY'] = 1; 
+        }else{
+            $row[$i]['ON_DELIVERY'] = 0; 
+        }
+        
+    }
+
+    array_push($objArray,$row);
     echo json_encode($objArray);
 }
 
@@ -64,40 +85,24 @@ if ($_GET["Command"] == "getRoutes") {
     
     $sql = "SELECT * FROM m_order where REF = '" . $_GET['REF'] . "'";
     $result = $conn->query($sql);
-    $row1 = $result->fetch();
+    $row = $result->fetch();
 
-    array_push($objArray,$row1);
+    array_push($objArray,$row);
 
-    // $sql = "SELECT loctaion_point_lat as lat, loctaion_point_lng as lng, shop_name FROM m_store where REF = '" . $row['st_ref'] . "'";
-    // $result = $conn->query($sql);
-    // $row = $result->fetch();
-
-    // array_push($objArray,$row);
-
-    $sql = "SELECT * FROM m_order_store where REF = '" . $_GET['REF'] . "'";
+    $sql = "SELECT loctaion_point_lat as lat, loctaion_point_lng as lng, shop_name FROM m_store where REF = '" . $row['st_ref'] . "'";
     $result = $conn->query($sql);
-    $row = $result->fetchAll();
+    $row = $result->fetch();
 
-    for($i = 0; $i<sizeof($row); $i++){
-       
-
-        $sqlstore = "SELECT * FROM m_store where REF = '" . $row[$i]['st_ref'] . "'";
-        $result = $conn->query($sqlstore);
-        $rowstore = $result->fetch();
-
-        $row[$i] = $rowstore;
-    }
     array_push($objArray,$row);
 
 
-    $sql = "SELECT lat, lng, user_name as name FROM user_mast_rider where user_name = '" . $row1['rider_name'] . "'";
+    $sql = "SELECT lat, lng, user_name as name FROM user_mast_rider";
     $result = $conn->query($sql);
     $row = $result->fetchAll();
 
     array_push($objArray,$row);
 
     echo json_encode($objArray);
-    // print_r($objArray);
 }
 
 

@@ -53,9 +53,25 @@
                             <td>{{ order.phone }}</td>
                             <td>{{ order.reg_name }}</td>
                             <td>{{ order.tot }}</td>
-                            <td><a id="store_info" class="btn btn-success btn-sm" @click="view_stores(order.REF)">View</a></td>
-                            <td></td>
-                            <td></td>
+
+
+                            <td v-if="order.status != 'DELIVERED'"><a id="store_info" class="btn btn-success btn-sm" @click="view_stores(order.REF)">View</a></td>
+                            <td v-if="order.status == 'DELIVERED'"></td>
+                            
+                            <td v-if="order.rider_name != undefined">{{ order.rider_name }}</td>
+                            <td v-if="order.rider_name == undefined">
+                              <select class="form-control" @change="setRider($event,order.REF)">
+                                  <option></option>
+                                  <option  v-for="rider in riders" v-bind:value="rider.user_name">{{ rider.user_name }}</option>
+                              </select>
+                          </td>
+
+
+                            <td v-if="order.status == 'PLACE'">Ready</td>
+                            <td v-if="order.status == 'DELIVERY'">Delivery</td>
+                            <td v-if="order.status == 'DELIVERED'">Completed</td>
+
+
                         </tr>
                     </tfoot>
                 </table>

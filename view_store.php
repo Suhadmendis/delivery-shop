@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Simple Map</title>
+    <title>Stores</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <style>
@@ -24,8 +24,10 @@
 
 <body>
     
+       
+    
     <div id="map"></div>
-    <script src="js/m_store.js"></script>
+    <script src="js/view_store.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClBKRU9iKfSLnXVTvdv11RvKwpCrfdoQI&callback=initMap" async defer></script>
     <script>setTimeout(function(){ getStores(); }, 2000);</script>
 </body>

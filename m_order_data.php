@@ -14,6 +14,8 @@ if ($_GET["Command"] == "generate") {
     $ResponseXML = "";
     $ResponseXML .= "<new>";
 
+    $objArray = Array();
+
     $sql = "SELECT * FROM m_order";
     $result = $conn->query($sql);
     $row = $result->fetchAll();
@@ -28,8 +30,14 @@ if ($_GET["Command"] == "generate") {
 
     $en_name = "Order";
 
-    $objArray = Array();
     array_push($objArray,$row,$en_name);
+
+
+    $sql = "SELECT * FROM user_mast_rider";
+    $result = $conn->query($sql);
+    $row = $result->fetchAll();
+
+    array_push($objArray,$row);
 
     echo json_encode($objArray);
 
@@ -57,44 +65,41 @@ if ($_GET["Command"] == "getStores") {
 
 
 
-// if ($_GET["Command"] == "save_item") {
+if ($_GET["Command"] == "setRider") {
  
 
     
-//     try {
-//         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//         $conn->beginTransaction();
+    try {
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $conn->beginTransaction();
 
-//         $sql = "SELECT store_ref FROM sys_info";
-//         $resul = $conn->query($sql);
-//         $row = $resul->fetch();
-//         $no = $row["store_ref"];
-//         $tmpinvno = "000000" . $row["store_ref"];
-//         $lenth = strlen($tmpinvno);
-//         $no1 = trim("ST/") . substr($tmpinvno, $lenth - 7);
-
-//         $sql = "Insert into m_store(REF, shop_name, tagline, listing_type, vendor_ref, vendor_name, address, loctaion_point_lat, loctaion_point_lng, phone_number_1, phone_number_2, email_address, approve, user, active)values
-//                         ('" . $no1 . "' ,'" . $_GET['shop_name'] . "' ,'" . $_GET['tagline'] . "' ,'" . $_GET['listing_type'] . "' ,'" . $_GET['vendor_ref'] . "' ,'" . $_GET['vendor_name'] . "' ,'" . $_GET['address'] . "' ,'" . $_GET['loctaion_point_lat'] . "' ,'" . $_GET['loctaion_point_lng'] . "' ,'" . $_GET['phone_number_1'] . "' ,'" . $_GET['phone_number_2'] . "' ,'" . $_GET['email_address'] . "' ,'" . $_GET['approve'] . "' ,'" . $_SESSION['UserName'] . "','" . $_GET['active'] . "')";
-//         $result = $conn->query($sql);
+        
+       
         
         
-//         $no2 = $no + 1;
-//         $sql = "update sys_info set store_ref = $no2 where store_ref = $no";
-//         $result = $conn->query($sql);
+        
+        $sql = "update m_order set rider_name = '" . $_GET['rider'] . "' where REF = '" . $_GET['ref'] . "'";
+        $result = $conn->query($sql);
 
-//         $sql = "Insert into sys_log(REF, entry, operation, user, ip)values
-//                         ('" . $no1 . "' ,'entry' ,'SAVE'  ,'" . $_SESSION['UserName'] . "' ,'ip')";
-//         $result = $conn->query($sql);
+        $sql = "update m_order set delivery_type = 'MUL' where REF = '" . $_GET['ref'] . "'";
+        $result = $conn->query($sql);
+
+        $sql = "update m_order set status = 'DELIVERY' where REF = '" . $_GET['ref'] . "'";
+        $result = $conn->query($sql);
+
+        // $sql = "Insert into sys_log(REF, entry, operation, user, ip)values
+        //                 ('" . $no1 . "' ,'entry' ,'SAVE'  ,'" . $_SESSION['UserName'] . "' ,'ip')";
+        // $result = $conn->query($sql);
 
 
 
-//         $conn->commit();
-//         echo "Saved";
-//     } catch (Exception $e) {
-//         $conn->rollBack();
-//         echo $e;
-//     }
-// }
+        $conn->commit();
+        echo "Saved";
+    } catch (Exception $e) {
+        $conn->rollBack();
+        echo $e;
+    }
+}
 
 
 

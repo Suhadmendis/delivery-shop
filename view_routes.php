@@ -23,7 +23,7 @@
 </head>
 
 <body>
-    <h3 id="duration">Loading...</h3>
+    <h4 id="duration"></h4>
     <h4 id="routes"></h4>
     
     <input type="hidden" id="order_ref" value="<?php echo $_GET['Ref'] ?>">
@@ -32,7 +32,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyClBKRU9iKfSLnXVTvdv11RvKwpCrfdoQI&callback=initMap" async defer></script>
     <script>setTimeout(function(){ getRoutes(); }, 2000);</script>
     
-    <script>setTimeout(function(){ getInfo(); }, 4000);</script>
+    <!-- <script>setTimeout(function(){ getInfo(); }, 4000);</script> -->
 </body>
 
 </html>
